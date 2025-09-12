@@ -2,6 +2,7 @@
 
 # Stop at any error
 set -e
+set -x
 
 # Location of the source tree
 SOURCEDIR=`pwd`/DKV2
@@ -48,7 +49,9 @@ ${QMAKE} ${SOURCEDIR}/${PROJECTFILE} \
     -spec linux-g++ \
     CONFIG+=qtquickcompiler
 
-${MAKE} -j6
+# Remove remainders of old compilations
+rm DKV2.gch/c++
+${MAKE} -j
 
 ##### package with linuxdeployqt #####
 

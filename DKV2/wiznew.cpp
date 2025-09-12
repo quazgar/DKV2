@@ -401,8 +401,9 @@ void wpConfirmCreditor::initializePage()
     QString iban = field(pnIban).toString().isEmpty() ? qsl("(keine IBAN)") : field(pnIban).toString();
     QString bic = field(pnBic).toString().isEmpty() ? qsl("(keine BIC)") : field(pnBic).toString();
     QString account = field(pnAccount).toString().isEmpty() ? qsl("(kein Buchh.-Konto)") : field(pnAccount).toString();
-    subTitleLabel->setText(creditorSummary.arg(firstn, lastn, street, xxx,
-                                                 email, phone, contact, comment, iban, bic, account));
+
+    subTitleLabel->setText(creditorSummary.arg(firstn, lastn, street, xxx).arg(
+                                               email, phone, contact, comment, iban, bic, account));
     wizNew *wiz = qobject_cast<wizNew *>(wizard());
     if (wiz->selectCreateContract)
         cbCreateContract->setChecked(true);

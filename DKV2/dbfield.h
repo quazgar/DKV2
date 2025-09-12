@@ -62,6 +62,13 @@ struct dbForeignKey
         onDelete = qsl("ON DELETE ") +ODOU_Actions.at(delAction);
         onUpdate = qsl("ON UPDATE ") +ODOU_Actions.at(updAction);
     }
+    // ----- default constructor with empty QStrings -----
+    dbForeignKey()
+        : table(), field(), refTable(), refField(),
+          onDelete(), onUpdate()
+    {
+        // optionally set a flag that this object is “empty”
+    }
 
     // interface
     QString get_CreateSqlSnippet();
