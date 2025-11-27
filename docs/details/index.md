@@ -250,7 +250,7 @@ Erstellung von Verträgen nicht mehr angeboten.
 
 ![](_img/geldanlagen.jpg)
 
-## Fortlaufende Geldanlagen 
+## Fortlaufende Geldanlagen
 
 Bei fortlaufenden Geldanlagen gibt es kein Anfangs- oder Enddatum. Sie
 unterscheiden sich nur im "Typ" - also in ihrem Bezeichner. Das

@@ -1,5 +1,6 @@
 # ÜBER DKV2
-DKV2 wird von Holger Mairon und einigen "helfenden Händen" geschrieben und gepflegt. 
+
+DKV2 wird von Holger Mairon und einigen "helfenden Händen" geschrieben und gepflegt.
 
 Es kann verwendet werden, um Direktkredite in MHS Projekte zu verwalten. Es wird "Open Source" und
 kostenlos zur Verfügung gestellt. Der Autor übernimmmt keine Garantie oder Gewährleistung, dass das
