@@ -46,7 +46,7 @@ dlgInterestLetters::dlgInterestLetters(QWidget *parent, QVector<int> years) : QD
     g->addWidget(confirm, row++, 1);
     // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
     // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
-    connect(confirm, &QCheckBox::checkStateChanged, this, &dlgInterestLetters::confirmChanged);
+    connect(confirm, &QCheckBox::stateChanged, this, &dlgInterestLetters::confirmChanged);
 
     buttons =new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
     buttons->button(QDialogButtonBox::Ok)->setDefault(true);

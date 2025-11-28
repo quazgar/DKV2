@@ -94,7 +94,7 @@ wpTimeFrame::wpTimeFrame(QWidget* w) : QWizardPage(w)
     cbFloating->setCheckState (Qt::Unchecked);
     // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
     // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
-    connect(cbFloating, &QCheckBox::checkStateChanged, this, &wpTimeFrame::onSwitchFloating);
+    connect(cbFloating, &QCheckBox::stateChanged, this, &wpTimeFrame::onSwitchFloating);
 
     deVon =new QDateEdit();
     deVon->setDisplayFormat(qsl("dd.MM.yyyy"));

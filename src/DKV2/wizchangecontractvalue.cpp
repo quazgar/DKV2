@@ -205,7 +205,7 @@ wpChangeContract_Summary::wpChangeContract_Summary(QWidget* p) : QWizardPage(p)
     setLayout(layout);
     // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
     // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
-    connect(cb, &QCheckBox::checkStateChanged, this, &wpChangeContract_Summary::onConfirmData_toggled);
+    connect(cb, &QCheckBox::stateChanged, this, &wpChangeContract_Summary::onConfirmData_toggled);
 }
 
 int wpChangeContract_DatePage::nextId() const

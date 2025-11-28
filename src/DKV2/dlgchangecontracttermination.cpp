@@ -45,7 +45,7 @@ dlgChangeContractTermination::dlgChangeContractTermination(QWidget *parent) : QD
     allowBoth =new QCheckBox();
     // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
     // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
-    connect(allowBoth, &QCheckBox::checkStateChanged, this, &dlgChangeContractTermination::onAllowBothChanged);
+    connect(allowBoth, &QCheckBox::stateChanged, this, &dlgChangeContractTermination::onAllowBothChanged);
 
     QGridLayout* g =new QGridLayout(this);
     g->setColumnMinimumWidth(0, 30);

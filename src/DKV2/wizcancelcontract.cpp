@@ -92,7 +92,7 @@ wpCancelContract_SummaryPage::wpCancelContract_SummaryPage(QWidget* p) : QWizard
     setLayout(layout);
     // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
     // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
-    connect(cb, &QCheckBox::checkStateChanged, this, &wpCancelContract_SummaryPage::onConfirmData_toggled);
+    connect(cb, &QCheckBox::stateChanged, this, &wpCancelContract_SummaryPage::onConfirmData_toggled);
 }
 void wpCancelContract_SummaryPage::initializePage()
 {
