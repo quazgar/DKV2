@@ -269,7 +269,7 @@ bool wpChangeContract_Summary::isComplete() const
 {
     return field(qsl("confirmed")).toBool();
 }
-void wpChangeContract_Summary::onConfirmData_toggled(Qt::CheckState)
+void wpChangeContract_Summary::onConfirmData_toggled(int)
 {
     emit completeChanged();
 }

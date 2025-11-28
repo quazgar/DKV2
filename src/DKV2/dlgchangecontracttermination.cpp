@@ -104,7 +104,7 @@ void dlgChangeContractTermination::onNoticePeriod_currentIndexChanged(int i)
     }
 }
 
-void dlgChangeContractTermination::onAllowBothChanged(Qt::CheckState i)
+void dlgChangeContractTermination::onAllowBothChanged(int i)
 {
     if( i == Qt::Checked) {
         allowBoth->setChecked(true);

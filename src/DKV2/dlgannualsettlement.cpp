@@ -43,7 +43,7 @@ dlgAnnualsettlement::dlgAnnualsettlement(QWidget *parent, int year) : QDialog(pa
     setLayout(g);
 }
 
-void dlgAnnualsettlement::confirmChanged(Qt::CheckState state)
+void dlgAnnualsettlement::confirmChanged(int state)
 {
     if( state == Qt::Checked)
         buttons->button(QDialogButtonBox::Ok)->setEnabled(true);

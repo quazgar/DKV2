@@ -103,7 +103,7 @@ void wpCancelContract_SummaryPage::initializePage()
     subt = subt.arg(field(qsl("KüDatum")).toDate().toString(qsl("dd.MM.yyyy")));
     subTitleLabel->setText(subt);
 }
-void wpCancelContract_SummaryPage::onConfirmData_toggled(Qt::CheckState)
+void wpCancelContract_SummaryPage::onConfirmData_toggled(int)
 {
     emit completeChanged();
 }

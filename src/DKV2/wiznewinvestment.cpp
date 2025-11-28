@@ -123,7 +123,7 @@ wpTimeFrame::wpTimeFrame(QWidget* w) : QWizardPage(w)
     setLayout(vl);
 }
 
-void wpTimeFrame::onSwitchFloating(Qt::CheckState state)
+void wpTimeFrame::onSwitchFloating(int state)
 {
     if( state == Qt::CheckState::Checked){
         deVon->setDate (BeginingOfTime);

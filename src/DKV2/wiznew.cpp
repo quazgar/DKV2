@@ -447,7 +447,7 @@ int wpConfirmCreditor::nextId() const
     else
         return -1;
 }
-void wpConfirmCreditor::onConfirmCreateContract_toggled(Qt::CheckState state)
+void wpConfirmCreditor::onConfirmCreateContract_toggled(int state)
 {
     LOG_CALL;
     qInfo() << "onConfirmCreateContract..." << state;

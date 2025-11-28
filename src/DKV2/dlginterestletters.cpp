@@ -59,7 +59,7 @@ dlgInterestLetters::dlgInterestLetters(QWidget *parent, QVector<int> years) : QD
     setLayout(g);
 }
 
-void dlgInterestLetters::confirmChanged(Qt::CheckState state)
+void dlgInterestLetters::confirmChanged(int state)
 {
     if( state == Qt::Checked)
         buttons->button(QDialogButtonBox::Ok)->setEnabled(true);

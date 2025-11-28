@@ -42,7 +42,7 @@ public:
     bool validatePage() override;
 private slots:
     void onStartDate_changed();
-    void onSwitchFloating(Qt::CheckState state);
+    void onSwitchFloating(int state);
 
 private:
     QLabel *subTitleLabel = new QLabel(qsl("Keine Daten!"));

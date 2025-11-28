@@ -396,7 +396,7 @@ void wpNewDatabase_SummaryPage::initializePage()
     subt = subt.arg(field(dbConfig::paramName(STARTINDEX)).toString());
     subTitleLabel->setText(subt);
 }
-void wpNewDatabase_SummaryPage::onConfirmData_toggled(Qt::CheckState)
+void wpNewDatabase_SummaryPage::onConfirmData_toggled(int)
 {
     emit completeChanged();
 }

@@ -113,7 +113,7 @@ public:
     bool validatePage()   override;
     int nextId() const    override;
 public slots:
-    void onConfirmCreateContract_toggled(Qt::CheckState state);
+    void onConfirmCreateContract_toggled(int state);
 private:
     QCheckBox*  cbCreateContract =nullptr;
     QLabel *subTitleLabel = new QLabel(qsl("Keine Daten!"));

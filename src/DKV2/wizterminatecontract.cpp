@@ -76,7 +76,7 @@ void wpTerminateContract_ConfirmationPage::initializePage()
     subtitle = subtitle.arg(s_d2euro(wiz->cont.value()), s_d2euro(interest), s_d2euro(finalValue));
     subTitleLabel->setText(subtitle);
 }
-void wpTerminateContract_ConfirmationPage::onConfirmData_toggled(Qt::CheckState)
+void wpTerminateContract_ConfirmationPage::onConfirmData_toggled(int)
 {
     emit completeChanged();
 }

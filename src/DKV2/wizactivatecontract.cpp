@@ -127,7 +127,7 @@ bool wpInitialPayment_SummaryPage::validatePage()
         return true;
     return false;
 }
-void wpInitialPayment_SummaryPage::onConfirmData_toggled(Qt::CheckState )
+void wpInitialPayment_SummaryPage::onConfirmData_toggled(int )
 {
     emit completeChanged();
 }
