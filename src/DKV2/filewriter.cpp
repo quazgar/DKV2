@@ -104,10 +104,10 @@ bool savePdfFromHtmlTemplate(const QString &templateFileName, const QString &out
     printer.setPageLayout (pl);
     printer.setOutputFileName(fullOutputFileName);
 
-    //Prepare the document
+    // Prepare the document
     QTextDocument doc;
     QString renderedHtml = mustachReplace(templateFileName, data);
-    doc.setPageSize(pl.pageSize ().size (QPageSize::Unit::Point));
+    doc.setPageSize(pl.pageSize().size(QPageSize::Unit::Point));
 
     // render the content.
     doc.setDefaultStyleSheet (css);
