@@ -1,7 +1,8 @@
-#include "dlgchangecontracttermination.h"
 
-#include "uihelper.h"
+
+#include "helper.h"
 #include "helperfin.h"
+#include "dlgchangecontracttermination.h"
 
 dlgChangeContractTermination::dlgChangeContractTermination(QWidget *parent) : QDialog(parent)
 {
@@ -42,7 +43,9 @@ dlgChangeContractTermination::dlgChangeContractTermination(QWidget *parent) : QD
 
     QLabel* lBoth =new QLabel(qsl("Kündigungsfrist <i>und</i> Vertragsende zulassen"));
     allowBoth =new QCheckBox();
-    connect(allowBoth, &QCheckBox::checkStateChanged, this, &dlgChangeContractTermination::onAllowBothChanged);
+    // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
+    // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
+    connect(allowBoth, &QCheckBox::stateChanged, this, &dlgChangeContractTermination::onAllowBothChanged);
 
     QGridLayout* g =new QGridLayout(this);
     g->setColumnMinimumWidth(0, 30);
@@ -101,7 +104,7 @@ void dlgChangeContractTermination::onNoticePeriod_currentIndexChanged(int i)
     }
 }
 
-void dlgChangeContractTermination::onAllowBothChanged(Qt::CheckState i)
+void dlgChangeContractTermination::onAllowBothChanged(int i)
 {
     if( i == Qt::Checked) {
         allowBoth->setChecked(true);

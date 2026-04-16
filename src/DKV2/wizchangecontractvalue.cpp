@@ -1,8 +1,10 @@
-#include "wizchangecontractvalue.h"
 
+
+#include "helper.h"
 #include "helperfin.h"
 #include "appconfig.h"
-#include "contract.h"
+
+#include "wizchangecontractvalue.h"
 
 enum change_contract_pages {
     intro_page,
@@ -143,53 +145,14 @@ wpChangeContract_DatePage::wpChangeContract_DatePage(QWidget* parent) : QWizardP
 {
     subTitleLabel = new QLabel(qsl("Keine Daten!"));
     subTitleLabel->setWordWrap(true);
-    modeInfoLabel = new QLabel(qsl("Die Zinsanpassung erfolgt standardmäßig zum Jahresende. "
-                                   "Diese Einstellung kann hier für das laufende Jahr überschrieben werden. "
-                                   "Die Wahl gilt für alle Ein- und Auszahlungen in diesem Jahr."));
-    modeInfoLabel->setWordWrap(true);
-    modeInfoLabel->setToolTip(qsl("Die vorzeitige Anrechnung der Zinsen führt zu einem Zinseszins-Effekt, "
-                                  "der meist nicht erwünscht ist."));
-    deferredInterestCheckBox = new QCheckBox(qsl("Die Zinsen werden am Jahresende berücksichtigt"));
-    deferredInterestCheckBox->setChecked(true);
-    deferredInterestCheckBox->setToolTip(qsl("Abwählen, um die Zinsen zusammen mit der Ein- oder Auszahlung durchzuführen.\n"
-                                             "Auswählen, um die Zinsen am Jahresende zu berücksichtigen."));
 
     QDateEdit *de = new QDateEdit;
     de->setDisplayFormat(qsl("dd.MM.yyyy"));
-    registerField(qsl("date"), de, "date");
-    registerField(fnDeferredMidYearInterest, deferredInterestCheckBox);
-    connect(de, &QDateEdit::dateChanged, this, [this](const QDate& date) {
-        wizChangeContract* wiz = qobject_cast<wizChangeContract*>(wizard());
-        const bool showDeferredOption = wiz && wiz->cont && wiz->cont->interestActive();
-        if (not showDeferredOption) {
-            modeInfoLabel->setVisible(false);
-            deferredInterestCheckBox->setVisible(false);
-            return;
-        }
-
-        const contract::midYearInterestMode existingMode = wiz->cont->yearlyMidYearInterestMode(date.year());
-        if (existingMode == contract::deferred) {
-            modeInfoLabel->setText(qsl("In %1 werden unterjährige Zinsen erst mit der Jahresabrechnung gebucht.").arg(date.year()));
-            deferredInterestCheckBox->setVisible(false);
-        } else if (existingMode == contract::immediate) {
-            modeInfoLabel->setText(qsl("In %1 werden unterjährige Zinsen sofort gebucht.").arg(date.year()));
-            deferredInterestCheckBox->setVisible(false);
-        } else {
-            modeInfoLabel->setText(qsl("Die Zinsanpassung erfolgt standardmäßig zum Jahresende. "
-                                       "Diese Einstellung kann hier für das laufende Jahr überschrieben werden. "
-                                       "Die Wahl gilt für alle Ein- und Auszahlungen in diesem Jahr."));
-            deferredInterestCheckBox->setVisible(true);
-            deferredInterestCheckBox->setChecked(true);
-        }
-        modeInfoLabel->setVisible(true);
-    });
+    registerField(qsl("date"), de);
 
     QVBoxLayout*  layout = new QVBoxLayout;
     layout->addWidget(subTitleLabel);
     layout->addWidget(de);
-    layout->addSpacing(24);
-    layout->addWidget(modeInfoLabel);
-    layout->addWidget(deferredInterestCheckBox);
     setLayout(layout);
 }
 
@@ -206,40 +169,15 @@ void wpChangeContract_DatePage::initializePage()
         setTitle(qsl("Überweisungsdatum"));
         subTitleLabel->setText(subt + qsl("<p>Gib das Datum ein, zu dem die Überweisung durchgeführt wird."));
     }
-    qInfo() << QDate::currentDate() << ", " << wiz->earlierstDate << ", " << qMax(QDate::currentDate(), wiz->earlierstDate);
-    setField(qsl("date"), QVariant(qMax(QDate::currentDate(), wiz->earlierstDate)));
-
-    const bool showDeferredOption = wiz->cont && wiz->cont->interestActive();
-    if (not showDeferredOption) {
-        modeInfoLabel->setVisible(false);
-        deferredInterestCheckBox->setVisible(false);
-        return;
-    }
-
-    const int year = field(qsl("date")).toDate().year();
-    const contract::midYearInterestMode existingMode = wiz->cont->yearlyMidYearInterestMode(year);
-    if (existingMode == contract::deferred) {
-        modeInfoLabel->setText(qsl("In %1 werden unterjährige Zinsen erst mit der Jahresabrechnung gebucht.").arg(year));
-        deferredInterestCheckBox->setVisible(false);
-    } else if (existingMode == contract::immediate) {
-        modeInfoLabel->setText(qsl("In %1 werden unterjährige Zinsen sofort gebucht.").arg(year));
-        deferredInterestCheckBox->setVisible(false);
-    } else {
-        modeInfoLabel->setText(qsl("Die Zinsanpassung erfolgt standardmäßig zum Jahresende. "
-                                   "Diese Einstellung kann hier für das laufende Jahr überschrieben werden. "
-                                   "Die Wahl gilt für alle Ein- und Auszahlungen in diesem Jahr."));
-        deferredInterestCheckBox->setVisible(true);
-        deferredInterestCheckBox->setChecked(true);
-    }
-    modeInfoLabel->setVisible(true);
+    setField(qsl("date"), wiz->earlierstDate);
 }
 
 bool wpChangeContract_DatePage::validatePage()
 {
     wizChangeContract* wiz= qobject_cast<wizChangeContract*>(this->wizard());
     QDate d {field(qsl("date")).toDate()};
-
     QString msg;
+
     if( d < wiz->earlierstDate)
         msg =qsl("Das Vertragsdatum muss nach der letzten Buchung liegen");
     if( d.month() == 12 and d.day() == 31)
@@ -265,21 +203,14 @@ wpChangeContract_Summary::wpChangeContract_Summary(QWidget* p) : QWizardPage(p)
     layout->addWidget(subTitleLabel);
     layout->addWidget(cb);
     setLayout(layout);
-    connect(cb, &QCheckBox::checkStateChanged, this, &wpChangeContract_Summary::onConfirmData_toggled);
+    // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
+    // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
+    connect(cb, &QCheckBox::stateChanged, this, &wpChangeContract_Summary::onConfirmData_toggled);
 }
 
 int wpChangeContract_DatePage::nextId() const
 {
-    const wizChangeContract* wiz = qobject_cast<wizChangeContract*>(wizard());
-    bool askForPayout = wiz->interestPayoutPossible;
-    if (askForPayout && wiz->cont) {
-        const int year = field(qsl("date")).toDate().year();
-        const contract::midYearInterestMode existingMode = wiz->cont->yearlyMidYearInterestMode(year);
-        const bool deferredRequested = field(fnDeferredMidYearInterest).toBool();
-        const bool useDeferred = (existingMode == contract::deferred)
-                                 || (existingMode == contract::undecided && deferredRequested);
-        askForPayout = !useDeferred;
-    }
+    bool askForPayout =qobject_cast<wizChangeContract*>(wizard())->interestPayoutPossible;
     if( askForPayout)
         return payout_page;
     else
@@ -330,21 +261,6 @@ void wpChangeContract_Summary::initializePage()
         subtitle = qsl("Auszahlung ") +subtitle;
         newValue = wiz->currentAmount - change;
     }
-
-    if (wiz->cont && wiz->cont->interestActive()) {
-        const int year = field(qsl("date")).toDate().year();
-        const contract::midYearInterestMode existingMode = wiz->cont->yearlyMidYearInterestMode(year);
-        if (existingMode == contract::deferred) {
-            subtitle.append(qsl("<br>In %1 werden unterjährige Zinsen erst mit der Jahresabrechnung gebucht.").arg(year));
-        } else if (existingMode == contract::immediate) {
-            subtitle.append(qsl("<br>In %1 werden unterjährige Zinsen sofort gebucht.").arg(year));
-        } else if (field(fnDeferredMidYearInterest).toBool()) {
-            subtitle.append(qsl("<br>Unterjährige Zinsen werden mit der Jahresabrechnung gebucht."));
-        } else {
-            subtitle.append(qsl("<br>Unterjährige Zinsen werden sofort gebucht."));
-        }
-    }
-
     subTitleLabel->setText(subtitle.arg(wiz->contractLabel, wiz->creditorName, s_d2euro(oldValue),
                    deposit? qsl("+") : qsl("-"), s_d2euro(change),
                    s_d2euro(newValue), field(qsl("date")).toDate().toString(qsl("dd.MM.yyyy"))));
@@ -353,7 +269,7 @@ bool wpChangeContract_Summary::isComplete() const
 {
     return field(qsl("confirmed")).toBool();
 }
-void wpChangeContract_Summary::onConfirmData_toggled(Qt::CheckState)
+void wpChangeContract_Summary::onConfirmData_toggled(int)
 {
     emit completeChanged();
 }

@@ -1,6 +1,7 @@
-#include "wizterminatecontract.h"
+
 
 #include "dkdbhelper.h"
+#include "wizterminatecontract.h"
 
 wpTerminateContract_DatePage::wpTerminateContract_DatePage(QWidget* p) : QWizardPage(p)
 {
@@ -9,7 +10,7 @@ wpTerminateContract_DatePage::wpTerminateContract_DatePage(QWidget* p) : QWizard
 
     QDateEdit *de = new QDateEdit;
     de->setDisplayFormat(qsl("dd.MM.yyyy"));
-    registerField(qsl("date"), de, "date");
+    registerField(qsl("date"), de);
     de->setToolTip(qsl("Rückerstattungsdatum"));
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(subTitleLabel);
@@ -20,7 +21,7 @@ wpTerminateContract_DatePage::wpTerminateContract_DatePage(QWidget* p) : QWizard
 void wpTerminateContract_DatePage::initializePage()
 {
     wizTerminateContract* wiz = qobject_cast<wizTerminateContract*>(wizard());
-    QString creditorName =Vor_Nachname_Kreditor (wiz->cont.credId().v);
+    QString creditorName =Vor_Nachname_Kreditor (wiz->cont.creditorId());
     QString Kennung =wiz->cont.label();
     QString subt {qsl("Mit dieser Dialogfolge kannst Du den Vertrag <p><b>%1</b> von <b>%2</b><p> beenden.<p>"
                 "Gib das Datum an, zu dem der Vertrag ausgezahlt wird. "
@@ -56,7 +57,9 @@ wpTerminateContract_ConfirmationPage::wpTerminateContract_ConfirmationPage(QWidg
     layout->addWidget(cbPrint);
     layout->addWidget(cbConfirm);
     setLayout(layout);
-    connect(cbConfirm, &QCheckBox::checkStateChanged, this, &wpTerminateContract_ConfirmationPage::onConfirmData_toggled);
+    // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
+    // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
+    connect(cbConfirm, &QCheckBox::stateChanged, this, &wpTerminateContract_ConfirmationPage::onConfirmData_toggled);
 }
 
 void wpTerminateContract_ConfirmationPage::initializePage()
@@ -73,7 +76,7 @@ void wpTerminateContract_ConfirmationPage::initializePage()
     subtitle = subtitle.arg(s_d2euro(wiz->cont.value()), s_d2euro(interest), s_d2euro(finalValue));
     subTitleLabel->setText(subtitle);
 }
-void wpTerminateContract_ConfirmationPage::onConfirmData_toggled(Qt::CheckState)
+void wpTerminateContract_ConfirmationPage::onConfirmData_toggled(int)
 {
     emit completeChanged();
 }

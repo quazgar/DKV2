@@ -1,3 +1,8 @@
+
+
+#include <iso646.h>
+
+#include "helper.h"
 #include "helperfin.h"
 #include "appconfig.h"
 #include "wizactivatecontract.h"
@@ -27,9 +32,9 @@ wpInitialPayment_DatePage::wpInitialPayment_DatePage(QWidget* p) : QWizardPage(p
 {
     subTitleLabel = new QLabel(qsl("Keine Daten!"));
     subTitleLabel->setWordWrap(true);
-    QDateEdit* de = new QDateEdit;
+    QDateEdit *de = new QDateEdit;
     de->setDisplayFormat(qsl("dd.MM.yyyy"));
-    registerField(fnDate, de, "date");
+    registerField(fnDate, de);
 
     QVBoxLayout*  layout = new QVBoxLayout;
     layout->addWidget(subTitleLabel);
@@ -47,7 +52,7 @@ void wpInitialPayment_DatePage::initializePage()
 
 bool wpInitialPayment_DatePage::validatePage()
 {
-    if (field(fnDate).toDate() < minDate) {
+    if( field(fnDate).toDate() < minDate) {
         QMessageBox::information(this, qsl("Fehlerhaftes Datum"), qsl("Das Datum muss nach dem oder am Vertragsdatum liegen"));
         setField(fnDate, minDate);
         return false;
@@ -98,7 +103,9 @@ wpInitialPayment_SummaryPage::wpInitialPayment_SummaryPage( QWidget* p) : QWizar
     layout->addWidget(subTitleLabel);
     layout->addWidget(cb);
     setLayout(layout);
-    connect(cb, &QCheckBox::checkStateChanged, this, &wpInitialPayment_SummaryPage::onConfirmData_toggled);
+    // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
+    // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
+    connect(cb, &QCheckBox::stateChanged, this, &wpInitialPayment_SummaryPage::onConfirmData_toggled);
 }
 
 void wpInitialPayment_SummaryPage::initializePage()
@@ -120,7 +127,7 @@ bool wpInitialPayment_SummaryPage::validatePage()
         return true;
     return false;
 }
-void wpInitialPayment_SummaryPage::onConfirmData_toggled(Qt::CheckState )
+void wpInitialPayment_SummaryPage::onConfirmData_toggled(int )
 {
     emit completeChanged();
 }

@@ -1,6 +1,7 @@
-#include "dlginterestletters.h"
-#include "uihelper.h"
+
+#include "helper.h"
 #include "helperfin.h"
+#include "dlginterestletters.h"
 
 void dlgInterestLetters::setYear(int y)
 {
@@ -39,10 +40,13 @@ dlgInterestLetters::dlgInterestLetters(QWidget *parent, QVector<int> years) : QD
     g->addWidget(yearSelector, row++, 2);
 
     csv = new QCheckBox(qsl("Zinsen auch als csv Datei ausgeben."));
+//    g->addWidget(csv, row++, 1);
 
     confirm =new QCheckBox(qsl("Briefe als PDF Dateien ausgeben."));
     g->addWidget(confirm, row++, 1);
-    connect(confirm, &QCheckBox::checkStateChanged, this, &dlgInterestLetters::confirmChanged);
+    // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
+    // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
+    connect(confirm, &QCheckBox::stateChanged, this, &dlgInterestLetters::confirmChanged);
 
     buttons =new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
     buttons->button(QDialogButtonBox::Ok)->setDefault(true);
@@ -55,7 +59,7 @@ dlgInterestLetters::dlgInterestLetters(QWidget *parent, QVector<int> years) : QD
     setLayout(g);
 }
 
-void dlgInterestLetters::confirmChanged(Qt::CheckState state)
+void dlgInterestLetters::confirmChanged(int state)
 {
     if( state == Qt::Checked)
         buttons->button(QDialogButtonBox::Ok)->setEnabled(true);

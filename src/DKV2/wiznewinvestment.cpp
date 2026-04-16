@@ -1,7 +1,9 @@
-#include "wiznewinvestment.h"
 
-#include "uihelper.h"
+
+#include "helper.h"
 #include "appconfig.h"
+
+#include "wiznewinvestment.h"
 
 /* ////////////////////////////
   wpInvestmentSummary
@@ -90,19 +92,21 @@ wpTimeFrame::wpTimeFrame(QWidget* w) : QWizardPage(w)
     cbFloating =new QCheckBox(qsl("Ohne Datum (\"fortlaufend\")"));
     cbFloating->setToolTip (qsl("Bei einer Anlage ohne Ende Datum werden immer die letzten 12 Monate als Referenzzeitraum verwendet"));
     cbFloating->setCheckState (Qt::Unchecked);
-    connect(cbFloating, &QCheckBox::checkStateChanged, this, &wpTimeFrame::onSwitchFloating);
+    // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
+    // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
+    connect(cbFloating, &QCheckBox::stateChanged, this, &wpTimeFrame::onSwitchFloating);
 
     deVon =new QDateEdit();
     deVon->setDisplayFormat(qsl("dd.MM.yyyy"));
     lVon->setBuddy(deVon);
     deVon->setToolTip(lVon->toolTip());
-    registerField(pnVon, deVon, "date" /*, "dateChanged(QDate)"*/);
+    registerField(pnVon, deVon/*, "date", "dateChanged(QDate)"*/);
 
     deBis =new QDateEdit();
     deBis->setDisplayFormat(qsl("dd.MM.yyyy"));
     lBis->setBuddy(deBis);
     deBis->setToolTip(lBis->toolTip());
-    registerField(pnBis, deBis, "date" /*, "dateChanged(QDate)"*/);
+    registerField(pnBis, deBis/*, "date", "dateChanged(QDate)"*/);
 
     connect(deVon, &QDateTimeEdit::dateChanged, this, &wpTimeFrame::onStartDate_changed);
 
@@ -119,7 +123,7 @@ wpTimeFrame::wpTimeFrame(QWidget* w) : QWizardPage(w)
     setLayout(vl);
 }
 
-void wpTimeFrame::onSwitchFloating(Qt::CheckState state)
+void wpTimeFrame::onSwitchFloating(int state)
 {
     if( state == Qt::CheckState::Checked){
         deVon->setDate (BeginingOfTime);

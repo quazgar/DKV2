@@ -23,7 +23,7 @@ public:
     void initializePage() override;
     bool isComplete() const override;
 public slots:
-    void onConfirmData_toggled(Qt::CheckState);
+    void onConfirmData_toggled(int);
 
 private:
     QLabel *subTitleLabel = new QLabel(qsl("Keine Daten!"));

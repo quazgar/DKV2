@@ -1,11 +1,10 @@
+
+
+#include "helper.h"
+#include "helperfin.h"
 #include "dlgannualsettlement.h"
 
-#include "uihelper.h"
-#include "helper_core.h"
-#include "helperfin.h"
-
-dlgAnnualSettlement::dlgAnnualSettlement(int year, QWidget *parent)
-    : year(year), QDialog(parent)
+dlgAnnualsettlement::dlgAnnualsettlement(QWidget *parent, int year) : QDialog(parent), year(year)
 {
     QGridLayout* g =new QGridLayout();
     // get some space left and right
@@ -19,30 +18,32 @@ dlgAnnualSettlement::dlgAnnualSettlement(int year, QWidget *parent)
     g->addWidget(title, row++, 1);
 
     Q_ASSERT(year);
-    QString msgtxt =qsl("Die Abrechnung für das folgende Jahr kann ausgeführt werden:<p><b>%1<b>");
+    QString msgtxt =qsl("Die Abrechnung für das folgende Jahr kann gemacht werden:<p><b>%1<b>");
     QLabel* msg =new QLabel(msgtxt.arg(i2s(year)));
     msg->setWordWrap(true);
     g->addWidget(msg, row++, 1);
 
+    csv =new QCheckBox(qsl("Buchungen als csv Datei ausgeben."));
+    g->addWidget(csv, row++, 1);
+
     confirm =new QCheckBox(qsl("Jahresabrechnung jetzt durchführen."));
     g->addWidget(confirm, row++, 1);
+    // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
+    // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
+    connect(confirm, &QCheckBox::stateChanged, this, &dlgAnnualsettlement::confirmChanged);
 
-    connect(confirm, &QCheckBox::checkStateChanged, this, &dlgAnnualSettlement::confirmChanged);
-
-    // default dlg buttons - disable OK until "confirm" was checked
     buttons =new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
     buttons->button(QDialogButtonBox::Ok)->setDefault(true);
     buttons->button(QDialogButtonBox::Ok)->setEnabled(false);
-    connect(buttons, &QDialogButtonBox::accepted, this, &dlgAnnualSettlement::accept);
-    connect(buttons, &QDialogButtonBox::rejected, this, &dlgAnnualSettlement::reject);
-
+    connect(buttons, &QDialogButtonBox::accepted, this, &dlgAnnualsettlement::accept);
+    connect(buttons, &QDialogButtonBox::rejected, this, &dlgAnnualsettlement::reject);
     g->setRowMinimumHeight(row++, 20);
     g->addWidget(buttons, row++, 1, 1, 2);
 
     setLayout(g);
 }
 
-void dlgAnnualSettlement::confirmChanged(Qt::CheckState state)
+void dlgAnnualsettlement::confirmChanged(int state)
 {
     if( state == Qt::Checked)
         buttons->button(QDialogButtonBox::Ok)->setEnabled(true);

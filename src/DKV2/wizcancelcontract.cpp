@@ -1,3 +1,5 @@
+
+
 #include "wizcancelcontract.h"
 
 wpCancelContract_IntroPage::wpCancelContract_IntroPage(QWidget* p) : QWizardPage(p)
@@ -29,12 +31,12 @@ wpCancelContract_DatePage::wpCancelContract_DatePage(QWidget* p) : QWizardPage(p
     QLabel *lblVEnde =new QLabel(qsl("Datum, zu dem der Vertrag beendet wird"));
     QDateEdit *de = new QDateEdit;
     de->setDisplayFormat(qsl("dd.MM.yyyy"));
-    registerField(qsl("date"), de, "date");
+    registerField(qsl("date"), de);
 
     QLabel *lblK = new QLabel( qsl("Datum, zu dem die Kündigung ausgesprochen wurde"));
     QDateEdit *deK = new QDateEdit;
     deK->setDisplayFormat(qsl("dd.MM.yyyy"));
-    registerField(qsl("KüDatum"), deK, "date");
+    registerField(qsl("KüDatum"), deK);
 
     QVBoxLayout*  layout = new QVBoxLayout;
     layout->addWidget(subTitleLabel);
@@ -88,7 +90,9 @@ wpCancelContract_SummaryPage::wpCancelContract_SummaryPage(QWidget* p) : QWizard
     layout->addWidget(subTitleLabel);
     layout->addWidget(cb);
     setLayout(layout);
-    connect(cb, &QCheckBox::checkStateChanged, this, &wpCancelContract_SummaryPage::onConfirmData_toggled);
+    // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
+    // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
+    connect(cb, &QCheckBox::stateChanged, this, &wpCancelContract_SummaryPage::onConfirmData_toggled);
 }
 void wpCancelContract_SummaryPage::initializePage()
 {
@@ -99,7 +103,7 @@ void wpCancelContract_SummaryPage::initializePage()
     subt = subt.arg(field(qsl("KüDatum")).toDate().toString(qsl("dd.MM.yyyy")));
     subTitleLabel->setText(subt);
 }
-void wpCancelContract_SummaryPage::onConfirmData_toggled(Qt::CheckState)
+void wpCancelContract_SummaryPage::onConfirmData_toggled(int)
 {
     emit completeChanged();
 }

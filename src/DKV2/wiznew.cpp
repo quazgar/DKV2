@@ -1,4 +1,4 @@
-#include "wiznew.h"
+
 
 #include "helperfin.h"
 #include "dkdbhelper.h"
@@ -7,6 +7,7 @@
 #include "creditor.h"
 
 #include "investment.h"
+#include "wiznew.h"
 
 
 
@@ -82,7 +83,7 @@ bool wpNewOrExisting::validatePage()
     {
         wizNew *wiz = qobject_cast<wizNew *>(wizard());
         wiz->existingCreditorId = cbCreditors->itemData(field(pnCreditor).toInt()).toLongLong();
-        creditor c(creditorId_t{wiz->existingCreditorId});
+        creditor c(wiz->existingCreditorId);
         setField(pnFName, c.firstname());
         setField(pnLName, c.lastname());
         setField(pnStreet, c.street());
@@ -371,7 +372,9 @@ wpConfirmCreditor::wpConfirmCreditor(QWidget *p) : QWizardPage(p)
     l->addWidget(cbConfirmCreditor);
     l->addWidget(cbCreateContract);
     setLayout(l);
-    connect(cbCreateContract, &QCheckBox::checkStateChanged, this, &wpConfirmCreditor::onConfirmCreateContract_toggled);
+    // TODO Change to checkStateChanged once Qt 6.9 is available on all targets.
+    // https://doc.qt.io/qt-6/qcheckbox-obsolete.html
+    connect(cbCreateContract, &QCheckBox::stateChanged, this, &wpConfirmCreditor::onConfirmCreateContract_toggled);
     setCommitPage(true);
 }
 void wpConfirmCreditor::initializePage()
@@ -444,7 +447,7 @@ int wpConfirmCreditor::nextId() const
     else
         return -1;
 }
-void wpConfirmCreditor::onConfirmCreateContract_toggled(Qt::CheckState state)
+void wpConfirmCreditor::onConfirmCreateContract_toggled(int state)
 {
     LOG_CALL;
     qInfo() << "onConfirmCreateContract..." << state;
@@ -562,7 +565,7 @@ wpContractTimeframe::wpContractTimeframe(QWidget *p) : QWizardPage(p)
     subTitleLabel->setWordWrap(true);
     subTitleLabel->setText(qsl("Für das Vertragsende kann eine Kündigungsfrist <b>oder</b> ein festes Vertragsende vereinbart werden."));
     QDateEdit *deCDate = new QDateEdit(QDate::currentDate());
-    registerField(pnCDate, deCDate, "date");
+    registerField(pnCDate, deCDate);
     deCDate->setDisplayFormat(qsl("dd.MM.yyyy"));
     QLabel *l1 = new QLabel(qsl("Vertragsdatum"));
     l1->setBuddy(deCDate);
@@ -588,7 +591,7 @@ wpContractTimeframe::wpContractTimeframe(QWidget *p) : QWizardPage(p)
     l2->setBuddy(cbNoticePeriod);
 
     deTerminationDate = new QDateEdit;
-    registerField(pnEDate, deTerminationDate, "date");
+    registerField(pnEDate, deTerminationDate);
     deTerminationDate->setDisplayFormat(qsl("dd.MM.yyyy"));
     QLabel *l3 = new QLabel(qsl("Vertragsende"));
     l3->setBuddy(deTerminationDate);
@@ -917,7 +920,7 @@ wizNew::wizNew(creditor& c, QWidget *p) : QWizard(p), cred(c)
         setField(pnIban,    cred.iban());
         setField(pnBic,     cred.bic());
         setField(pnAccount, cred.account());
-        existingCreditorId =cred.id ().v;
+        existingCreditorId =cred.id ();
         selectCreateContract = false;
     }
 }
